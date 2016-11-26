@@ -283,13 +283,13 @@ extension PagesController {
   
   func updatePageProgresses() {
     
-    if let vc = previousViewController as? Interpolatable {
+    if let vc = previousViewController as? InterpolatableViewController {
       vc.interpolate(to: progressForPrevious)
     }
-    if let vc = currentViewController as? Interpolatable {
+    if let vc = currentViewController as? InterpolatableViewController {
       vc.interpolate(to: progressForCurrent)
     }
-    if let vc = nextViewController as? Interpolatable {
+    if let vc = nextViewController as? InterpolatableViewController {
       vc.interpolate(to: progressForNext)
     }
     
@@ -303,5 +303,12 @@ extension PagesController {
     }
     return nil
   }
+  
+}
+
+public protocol InterpolatableViewController: class {
+  
+  /// Percent value should be between -1...1
+  func interpolate(to progress:CGFloat)
   
 }
