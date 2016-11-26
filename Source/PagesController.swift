@@ -238,27 +238,27 @@ extension PagesController {
 
 extension PagesController {
   
-  var pageWidth:CGFloat {
+  public var pageWidth:CGFloat {
     return view.bounds.width
   }
   
-  var x:CGFloat {
+  public var x:CGFloat {
     return CGFloat(currentIndex - 1) * pageWidth + (scrollView?.contentOffset.x ?? 0)
   }
   
-  var totalProgress:CGFloat {
+  public var totalProgress:CGFloat {
     return x / (pageWidth * CGFloat(pagesCount - 1))
   }
   
-  var currentViewController:UIViewController? {
+  public var currentViewController:UIViewController? {
     return pages.at(currentIndex)
   }
   
-  var previousViewController:UIViewController? {
+  public var previousViewController:UIViewController? {
     return pages.at(currentIndex - 1)
   }
   
-  var nextViewController:UIViewController? {
+  public var nextViewController:UIViewController? {
     return pages.at(currentIndex + 1)
   }
   
@@ -281,7 +281,7 @@ extension PagesController {
     return progress(forPage: currentIndex + 1)
   }
   
-  func updatePageProgresses() {
+  public func updatePageProgresses() {
     
     if let vc = previousViewController as? InterpolatableViewController {
       vc.interpolate(to: progressForPrevious)
@@ -295,7 +295,7 @@ extension PagesController {
     
   }
   
-  var scrollView:UIScrollView? {
+  public var scrollView:UIScrollView? {
     for view in view.subviews {
       if let view = view as? UIScrollView {
         return view
