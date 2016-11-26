@@ -30,8 +30,8 @@ import UIKit
 
   open var showPageControl = true
 
-  lazy var pages = Array<UIViewController>()
-
+  internal(set) open lazy var pages = Array<UIViewController>()
+    
   open var pagesCount: Int {
     return pages.count
   }
@@ -234,3 +234,74 @@ extension PagesController {
   }
 }
 
+// MARK: StaySorted Additions
+
+extension PagesController {
+  
+  var pageWidth:CGFloat {
+    return view.bounds.width
+  }
+  
+  var x:CGFloat {
+    return CGFloat(currentIndex - 1) * pageWidth + (scrollView?.contentOffset.x ?? 0)
+  }
+  
+  var totalProgress:CGFloat {
+    return x / (pageWidth * CGFloat(pagesCount - 1))
+  }
+  
+  var currentViewController:UIViewController? {
+    return pages.at(currentIndex)
+  }
+  
+  var previousViewController:UIViewController? {
+    return pages.at(currentIndex - 1)
+  }
+  
+  var nextViewController:UIViewController? {
+    return pages.at(currentIndex + 1)
+  }
+  
+  /// Returns a value between -1...1
+  /// Where -1...0 signifies entrances from right of screen
+  /// And 0...1 signifies exit towards left of screen
+  private func progress(forPage page: Int) -> CGFloat {
+    return min(1, max(-1, (x - CGFloat(page) * pageWidth) / pageWidth))
+  }
+  
+  private var progressForPrevious:CGFloat {
+    return progress(forPage: currentIndex - 1)
+  }
+  
+  private var progressForCurrent:CGFloat {
+    return progress(forPage: currentIndex)
+  }
+  
+  private var progressForNext:CGFloat {
+    return progress(forPage: currentIndex + 1)
+  }
+  
+  func updatePageProgresses() {
+    
+    if let vc = previousViewController as? Interpolatable {
+      vc.interpolate(to: progressForPrevious)
+    }
+    if let vc = currentViewController as? Interpolatable {
+      vc.interpolate(to: progressForCurrent)
+    }
+    if let vc = nextViewController as? Interpolatable {
+      vc.interpolate(to: progressForNext)
+    }
+    
+  }
+  
+  var scrollView:UIScrollView? {
+    for view in view.subviews {
+      if let view = view as? UIScrollView {
+        return view
+      }
+    }
+    return nil
+  }
+  
+}
